@@ -2,6 +2,18 @@
 
 A Claude Code plugin that surveys your project's documentation, identifies every gap, and writes new documents one at a time — with your approval at every stage.
 
+## What is Diataxis?
+
+[Diataxis](https://diataxis.fr) is a framework for classifying documentation by purpose, and using that classification to identify gaps and plan improvements. This plugin implements the Diataxis framework as a structured process for improving your project's documentation.
+
+This plugin is designed to be used iteratively. It surveys your project, produces a plan for what documentation is missing, and waits for your approval before writing anything. You can choose to have it write documents inline in this session, or dispatch subagents to write them one at a time while you review the output.
+
+Features:
+
+- Comprehensive survey of your project's documentation
+- Structured gap analysis and improvement plan based on the Diataxis framework
+- Writing new documents one at a time, with your approval at every stage
+
 ## Installation
 
 ```bash
