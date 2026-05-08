@@ -1,0 +1,20 @@
+{
+  "name": "diataxis-documentation",
+  "description": "Survey a codebase, gap-analyse documentation using the Diataxis framework, plan improvements, and write docs one at a time",
+  "version": "1.0.0",
+  "author": {
+    "name": "andrabis",
+    "email": "hrs.andrabi@gmail.com"
+  },
+  "homepage": "https://github.com/andrabis/diataxis-documentation",
+  "repository": "https://github.com/andrabis/diataxis-documentation",
+  "license": "MIT",
+  "keywords": [
+    "documentation",
+    "diataxis",
+    "tutorials",
+    "how-to",
+    "reference",
+    "explanation"
+  ]
+}
