@@ -1,115 +1,42 @@
 ---
 name: document
-description: Use to orchestrate a comprehensive documentation improvement process, from surveying gaps to writing new documents.
+description: Use to orchestrate a complete Diátaxis documentation workflow from survey and planning through iterative document implementation and refinement.
 ---
 
 # Diataxis: Document
 
-Survey the project, produce a gap analysis and plan by documentation type, confirm with the user, then write every approved document one at a time.
+This skill is the primary entry point for the Diátaxis documentation workflow. You are orchestrating a series of tasks that will produce a complete documentation system for a project. For each of the items in the checklist below, create a task and complete it before moving on to the next item.
 
-**Announce at start:** "I'm using the diataxis:document skill to survey and plan improvements to your project's documentation."
+1. [ ] Invoke `diataxis:survey`
 
-<HARD-GATE>
-Do NOT write a single word of documentation until the user has explicitly approved the plan. This applies even when the gaps are obvious.
-</HARD-GATE>
+   Running this skill will survey the codebase and produce a documentation architecture and implementation plan. The output will be a markdown file at `docs/diataxis/plan.md`.
 
-## Checklist
+2. [ ] Request user review of the plan
 
-Create a todo for each item and complete them in order:
+   The user must explicitly approve the plan before any implementation begins. Prompt the user to inspect the plan at the path: `docs/diataxis/plan.md`. Ask if they approve the plan as-is, if they would like to request changes. If the user requests changes, revise the plan and request approval again. If the user rejects the plan entirely, stop immediately and report that no documentation was written. If the user approve the plan, proceed to the next step.
 
-1. **Invoke `diataxis:survey`** — receive the structured gap analysis and documentation plan
-2. **Present the plan and confirm with the user** — present the full structured output from `diataxis:survey` verbatim using the required format; ask about language and style preferences at the end of the presentation; wait for explicit approval or adjustments; revise and present again if changes are requested
-3. **Offer execution choice** — inline (this session) or subagent per document
-4. **Write documents one at a time** — invoke `diataxis:write-doc` for each approved item; `diataxis:write-doc` commits each document internally — do not commit separately
+3. [ ] Recursively implement documents
 
-## The Process
+   Identify the approved document set. Create a new task for each document and complete it before moving on to the next one.
 
-```dot
-digraph document {
-    "Invoke diataxis:survey" [shape=box];
-    "Present plan by type" [shape=box];
-    "User approves?" [shape=diamond];
-    "Revise plan" [shape=box];
-    "Offer execution choice" [shape=box];
-    "Inline or subagent?" [shape=diamond];
-    "Invoke diataxis:write-doc (inline)" [shape=box];
-    "Dispatch subagent\nwith diataxis:write-doc" [shape=box];
-    "More documents?" [shape=diamond];
-    "Done" [shape=doublecircle];
+   Dispatch a new subagent for each document. Give each subagent only the complete plan entry for the document it is writing.
 
-    "Invoke diataxis:survey" -> "Present plan by type";
-    "Present plan by type" -> "User approves?";
-    "User approves?" -> "Revise plan" [label="no"];
-    "Revise plan" -> "Present plan by type";
-    "User approves?" -> "Offer execution choice" [label="yes"];
-    "Offer execution choice" -> "Inline or subagent?";
-    "Inline or subagent?" -> "Invoke diataxis:write-doc (inline)" [label="inline"];
-    "Inline or subagent?" -> "Dispatch subagent\nwith diataxis:write-doc" [label="subagent"];
-    "Invoke diataxis:write-doc (inline)" -> "More documents?";
-    "Dispatch subagent\nwith diataxis:write-doc" -> "More documents?";
-    "More documents?" -> "Invoke diataxis:write-doc (inline)" [label="yes (inline)"];
-    "More documents?" -> "Dispatch subagent\nwith diataxis:write-doc" [label="yes (subagent)"];
-    "More documents?" -> "Done" [label="no"];
-}
-```
+   Instruct each subagent to invoke `diataxis:write-doc` with that plan entry. Do not invoke the type-specific skills directly from this orchestration skill.
 
-## Presenting the Plan
+4. [ ] Improve navigation and cross-linking
 
-Present the plan in this format exactly. Do not paraphrase or summarise — show the full structured output from `diataxis:survey`.
+   Review the documentation system as a whole and identify opportunities to improve navigation and cross-linking. Create new tasks for each improvement and complete them sequentially.
 
-> "Here's what I found.
->
-> **Existing docs:** [one-sentence summary of what exists and how it classifies]
->
-> **Biggest gaps:** [list the most urgent missing types]
->
-> **Proposed plan:**
->
-> ### Tutorials (N existing → M proposed)
->
-> - [x] "Title" _(exists, good shape)_
-> - [~] "Title" _(exists — needs [specific improvement])_
-> - [ ] "Title" — one-line purpose
->
-> ### How-to guides (N existing → M proposed)
->
-> - [ ] "Title" — one-line purpose
->
-> ### Reference (N existing → M proposed)
->
-> - [ ] "Title" — one-line purpose
->
-> ### Explanation (N existing → M proposed)
->
-> - [ ] "Title" — one-line purpose
->
-> **Documentation toolchain:** [toolchain from survey — e.g. "MkDocs (`mkdocs.yml` detected) — I'll write `.md` files in `docs/` using mkdocstrings for API reference."] Is this correct, or would you prefer a different tool?
->
-> Before I start writing: what English variant do you prefer (UK / US / other)? Any tone or style conventions I should follow?"
+5. [ ] Produce final implementation summary
 
-Wait for explicit approval. If the user requests changes, update the plan and present it again. Only proceed to the execution choice once the user says yes.
+   At completion, produce a summary containing an overview of the implemented documentation system. Include a list of implemented documents, and instructions for running the documentation toolchain if applicable.
 
-If the user declines or cancels the plan entirely, stop. Report that no documents were written. Do not re-present the plan unless the user explicitly asks.
+## Rules
 
-If the user approves only a subset of proposed documents, remove the rejected items from the plan and proceed with the approved subset only. Do not write any document the user has not approved.
-
-## Execution Choice
-
-After plan approval, present exactly this:
-
-> "Two options for writing the documents:
->
-> **1. Subagent per document (recommended)** — I dispatch a fresh subagent for each document with isolated context. Better for four or more documents.
->
-> **2. Inline** — I write each document in this session, one after another. Simpler for three documents or fewer.
->
-> Which approach?"
-
-**If subagent chosen:** Dispatch one subagent per document. Provide each subagent with: the document type, title, one-line purpose, the project summary from the survey, the confirmed documentation toolchain, the agreed language and style preferences, and the instruction to use `diataxis:write-doc`.
-
-**If inline chosen:** Invoke `diataxis:write-doc` directly for each item in the approved plan, in priority order, passing the document type, title, one-line purpose, project summary, confirmed documentation toolchain, and agreed language and style preferences.
-
-**REQUIRED SUB-SKILLS:**
-
-- `diataxis:survey` — produces the gap analysis and plan
-- `diataxis:write-doc` — writes each individual document
+- Do not write any documentation before the user explicitly approves the plan.
+- Do not skip the survey and planning phase.
+- Do not generate documentation opportunistically during analysis.
+- Treat the survey output (`docs/diataxis/plan.md`) as the source of truth for implementation. Do not deviate from the plan during implementation.
+- Only write documents that exist in the approved plan.
+- Use `diataxis:write-doc` for every planned document.
+- Let `diataxis:write-doc` validate context and route to the correct type-specific writing skill.

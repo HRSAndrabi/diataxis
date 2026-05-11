@@ -1,222 +1,323 @@
 ---
 name: survey
-description: Use when surveying a codebase and existing documentation to produce a Diataxis-classified gap analysis and documentation plan
+description: Use when surveying a codebase and planning a complete documentation system using the Diátaxis framework
 ---
 
 # Diataxis: Survey
 
-Explore the project, catalogue every existing document, classify each using the Diataxis framework, identify every gap, and produce a structured documentation plan. Return the plan to the caller — do not present it to the user and do not wait for approval.
+You are acting as a documentation architect. You will explore the codebase, evaluate existing documentation, design the documentation architecture, and produce a structured implementation plan for a complete documentation system using the Diátaxis framework. The full plan should be written to a markdown file at `docs/diataxis/plan.md`.
 
-## Checklist
+**Announce at start**: "I'm using the survey skill to create the implementation plan."
 
-Create a todo for each item and complete them in order:
+For each of the items in the checklist below, create a task and complete it before moving on to the next item.
 
-1. **Explore the codebase** — README, docs/, any .md files, code entry points, tech stack, intended audience, and documentation toolchain (see Toolchain Detection below)
-2. **Write a one-paragraph project summary** — what the project does, who it is for, what the main concepts are
-3. **Catalogue every doc found** — classify each with the Diataxis framework; flag every misclassification
-4. **Run the gap analysis** — check all four types; note what is missing or inadequate in each
-5. **Draft the documentation plan** — specific title and one-line purpose for every gap
+1. [ ] Instantiate an empty `docs/diataxis/plan.md`
 
-## The Four Types
+   Every plan MUST start with this header:
 
-Every piece of documentation belongs to exactly one of the four types below. Classify by asking two questions: Is this about _doing_ or _understanding_? Is the reader _learning_ or _working_? These two questions resolve every ambiguous case.
+   ```markdown
+   # [Feature Name] Implementation Plan
 
-|                   | Learning    | Working      |
-| ----------------- | ----------- | ------------ |
-| **Doing**         | Tutorial    | How-to guide |
-| **Understanding** | Explanation | Reference    |
+   > **For agentic workers:** REQUIRED SUB-SKILL: Use diataxis:subagent-driven-development (recommended) or diataxis:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-### Tutorials
+   ---
+   ```
 
-A tutorial is a lesson. The reader is a beginner who cannot yet judge whether their own work is correct. That is your responsibility as the writer. You guide; they follow. Something real and visible happens at every step.
+2. [ ] Explore the codebase
 
-**Identify a tutorial by these characteristics:**
+   Build a mental model of how the software works. Reverse-engineer the system architecture, core user workflow(s), operational model, and conceptual structure of the software.
+   1. [ ] Identify the primary purpose of the software
+   2. [ ] Identify the intended users
+   3. [ ] Identify core concepts and workflows
+   4. [ ] Identify the main architectural components
+   5. [ ] Identify runtime model and execution flow
 
-- It walks the reader through completing something specific from scratch
-- Every step produces a visible, verifiable result — the reader can confirm they are on track
-- Nothing is assumed; nothing is skipped
-- The reader learns by doing, not by reading about doing
+      Create a mermaid diagram. The purpose of this diagram is to organise your understanding of the system before planning documentation. The diagram should display:
+      - major components
+      - relationships between components
+      - execution flow
+      - user interaction flow
+      - subsystem boundaries
 
-**Common misclassifications:**
+   6. [ ] Identify entry points for users
+   7. [ ] Identify avenues for extensibility and integration
+   8. [ ] Detect the documentation toolchain (e.g. MkDocs, Sphinx, custom system, etc.)
+   9. [ ] Detect testing and development workflows
+   10. [ ] Update `docs/diataxis/plan.md`
 
-- A "Getting Started" page that explains concepts instead of guiding action is not a tutorial — it is explanation dressed up as a tutorial
-- A feature walkthrough that demonstrates capability instead of teaching the reader how to accomplish something is not a tutorial — it is a product demo
-- A tutorial that offers three ways to do the same thing is not a tutorial — it is an indecisive how-to guide
+   Append the project summary, architecture summary, and toolchain summary to the plan.md document under the sections "Project Summary", "System Architecture Summary", and "Toolchain Detection" respectively. Include the mermaid diagram from step 2.4. in the "System Architecture" section.
 
-### How-to Guides
+   Be ruthlessly concise in these summaries. The purpose is to capture the essential information needed for documentation planning, not to write a comprehensive analysis of the system.
 
-A how-to guide serves a competent user who has a specific goal and needs to achieve it. The reader already knows what they want and why. Your job is to get them there.
+3. [ ] Survey existing documentation
 
-**Identify a how-to guide by these characteristics:**
+   Understand what documentation already exists and how it is currently structured.
+   1. [ ] Produce a catalogue of existing documentation. For every document found, record:
 
-- The title names a goal: "How to deploy to production", "How to add a custom provider"
-- It assumes the reader is competent and purposeful — no background, no motivation, no preamble
-- It contains steps, commands, and conditionals only
-- It may fork: real tasks have decision points and the guide captures them
+      ```text
+      File: <path to document>
+      Purpose: <one-line description of what the document is for>
+      Classification: <Diátaxis classification or "Mixed">
+      ```
 
-**Common misclassifications:**
+      To assign the Diátaxis classification, consult the Diátaxis classification rules in [DIATAXIS.md](DIATAXIS.md).
 
-- A "Configuration" page that explains every option in narrative form is not a how-to guide — it is reference with instructions mixed in
-- An "Advanced Usage" page that teaches concepts rather than directing action is not a how-to guide — it is explanation
-- A tutorial that says "if you're an advanced user, skip to step 4" is not a how-to guide — it is a tutorial that does not trust its audience
+   2. [ ] Detect structural problems in the existing documentation system
 
-### Reference
+      Flag items in the existing documentation that violate Diátaxis principles or indicate structural problems, such as:
+      - duplicated content
+      - mixed-purpose documents
+      - missing sections
+      - navigation problems
+      - structural inconsistencies
+      - unclear learning paths
 
-Reference is a map of the machinery. The reader is working and needs a fact. Give it to them — then stop.
+   3. [ ] Update `docs/diataxis/plan.md`
 
-**Identify reference by these characteristics:**
+   Append the catalogue and structural evaluation to the plan.md document under the section "Existing Documentation". If no documentation was found, note 'No existing documentation found' in this section.
 
-- It describes what exists: every API endpoint, every configuration key, every CLI flag, every method signature and return type
-- Its structure mirrors the structure of the product itself — same order, same names, same groupings
-- It contains facts, not instructions or explanations
-- It is complete — incompleteness defeats the purpose of reference entirely
+4. [ ] Design the documentation architecture
 
-**Common misclassifications:**
+   Design the high-level documentation architecture before planning individual documents.
 
-- A "README" that mixes a configuration table with usage examples and a philosophy section is not reference — it is three things failing to be any of them
-- An "API reference" that says "to call this method, first do X" is giving instructions — reference says what the method accepts and returns, nothing more
-- A "Concepts" page that lists terms and their definitions but then explains why those concepts exist is mixing reference with explanation
+   This step should work from broad structure toward sharper structure. First establish the major documentation areas, then define what belongs in each area. In the next step, we will refine the hierarchy until it forms a coherent documentation website.
 
-### Explanation
+   The output of this step is not a document-by-document plan. The output is a structured documentation architecture: the navigation model, the purpose of each section, and the kinds of content each section should contain.
+   1. [ ] Define the documentation vision
 
-Explanation is for readers who want to understand, not act. They are not in the middle of a task. They want to know why the system works the way it does.
+      Write a short statement describing what the documentation system needs to help users do.
 
-**Identify explanation by these characteristics:**
+      This should explain:
+      - who the documentation is for
+      - what users need to understand
+      - what users need to accomplish
 
-- It covers design decisions, trade-offs, history, and context
-- The reader can benefit from it without having the product open in front of them
-- It expresses opinions and recommends approaches — this is the only type where that is appropriate
-- It makes connections to related concepts, even outside the immediate system
+   2. [ ] Design the top-level navigation
 
-**Common misclassifications:**
+      Design the main sections of the documentation website.
 
-- Architecture comments scattered across inline code are not explanation — they are explanation without a home, which is the same as no explanation at all
-- A "Philosophy" section buried inside a README is explanation that has been misplaced — extract it
-- A document titled "How it works" that contains both conceptual background and step-by-step instructions is not explanation — the instructions need to move to a how-to guide
+      A good default structure is:
 
-## Toolchain Detection
+      ```text
+      Home
+      Getting Started
+      Tutorials
+      How-to Guides
+      Reference
+      Explanation
+      Architecture
+      Contributing
+      Troubleshooting
+      About
+      ```
 
-Identify the documentation toolchain before doing anything else. It determines file format, directory structure, inline comment conventions, and cross-reference syntax. The toolchain you detect becomes a field in your output — the orchestrator will confirm it with the user before writing begins.
+      Adjust this structure if the project requires a different navigation model.
 
-**To detect the toolchain, look for:**
+      For each top-level section, record:
 
-- Documentation build configuration files anywhere in the project (root, `docs/`, or config directories)
-- Build scripts in package manager files (`package.json`, `Makefile`, `pyproject.toml`, `tox.ini`) that reference documentation generation
-- CI pipeline steps that build or deploy documentation
-- The file format of existing documentation files (`.rst`, `.md`, `.adoc`, etc.)
-- Patterns in existing doc files that suggest auto-generation from source comments
+      ```text
+      Section: <navigation label>
+      Purpose: <what this section is for>
+      Contains: <types of documents or topics that belong here>
+      Excludes: <types of content that should not go here>
+      ```
 
-**If a toolchain is detected:** note it and include it in the output. Do not recommend switching to a different tool.
+   3. [ ] Design the learning architecture
 
-**If no toolchain is detected:** record "None detected" in the output. The orchestrator will ask the user to choose one before writing begins.
+      Plan how a new user should move from first contact to productive use.
 
-**Also detect the inline comment style** used in the source code, if any. Scan a sample of source files and note the convention (e.g. docstring format for Python, JSDoc-style comments for JavaScript, XML doc comments for C#). Include this in the toolchain output — it determines how API reference content is written.
+      This should define:
+      - the first page a new user should read
+      - the first successful outcome they should achieve
+      - the core tutorials required for onboarding
+      - the order in which tutorials should be read
+      - where conceptual explanations are needed to support learning
+      - where users should be redirected from tutorials into reference or how-to material
 
-## Cataloguing Existing Docs
+   4. [ ] Design the task architecture
 
-For every documentation file found, record all three of these:
+      Plan how users will find instructions for accomplishing specific tasks.
 
-```
-File: README.md
-Content: Installation steps + configuration table + design rationale
-Classification: Mixed (tutorial + reference + explanation) — needs splitting
-```
+      Group tasks by user goal, not by internal code structure.
 
-Flag every misclassification. Do not mark a mixed document as acceptable. A document that serves two purposes serves neither well.
+      For each task group, record:
 
-If no documentation files are found at all, write "No documentation found" under Existing Documentation in the output and proceed directly to the gap analysis. Treat every checklist item as unmet.
+      ```text
+      Task group: <name>
+      User goal: <what the user is trying to do>
+      Likely documents: <kinds of how-to guides needed>
+      Related reference: <reference pages users may need>
+      Related explanation: <conceptual pages users may need>
+      ```
 
-## Gap Analysis
-
-Work through each type systematically. For each type, record what exists, what is missing, and what is misclassified:
-
-**Tutorials**
-
-- [ ] Is there at least one end-to-end getting-started tutorial?
-- [ ] Does it guide the learner to a meaningful first success without requiring they understand everything first?
-- [ ] Does every step produce a visible, verifiable result?
-- [ ] Is it free of explanation (beyond a single clarifying sentence per step)?
-- [ ] Does it make every decision for the reader — no options, no alternatives?
-      For every unchecked item, add a corresponding `[ ]` entry to the Documentation Plan with a specific title and a one-line purpose statement.
-
-**How-to guides**
-
-- [ ] Are the most common user tasks covered as focused, goal-titled guides?
-- [ ] Are they written from the user's goal — not from the tool's perspective?
-- [ ] Do they assume a competent user who knows what they want?
-- [ ] Are they free of teaching, background, and motivation?
-      For every unchecked item, add a corresponding `[ ]` entry to the Documentation Plan with a specific title and a one-line purpose statement.
-
-**Reference**
-
-- [ ] Is the API / CLI / configuration fully described in a neutral, factual way?
-- [ ] Does the structure of the reference mirror the structure of the product itself?
-- [ ] Is it complete — every option, flag, field?
-- [ ] Is it free of instruction and explanation?
-      For every unchecked item, add a corresponding `[ ]` entry to the Documentation Plan with a specific title and a one-line purpose statement.
-
-**Explanation**
-
-- [ ] Are there documents explaining _why_ the system works the way it does?
-- [ ] Are design decisions, architecture choices, and trade-offs documented?
-- [ ] Is there context for non-obvious concepts that users need to understand the domain?
-      For every unchecked item, add a corresponding `[ ]` entry to the Documentation Plan with a specific title and a one-line purpose statement.
-
-## Output Format
-
-Return your findings in the following format. Do not present this to the user — return it to the orchestrator (`diataxis:document`), which will present it and handle user interaction.
-
-Use exactly these markers throughout the plan: `[x]` = exists and is well-formed, `[~]` = exists but needs improvement, `[ ]` = missing entirely. No other values are permitted.
-
-```markdown
-## Project Summary
-
-[One paragraph: what the project does, who it is for, what the main concepts are, what the tech stack is.]
-
-## Documentation Toolchain
-
-Detected: [tool name, or "None detected"]
-Config: [path to build config file, or "none found"]
-Inline comment style: [e.g. "Google-style docstrings" / "JSDoc comments" / "none detected"]
-Recommendation: [if already in use: "Continue with [tool]." / if not detected: "None detected — the orchestrator will ask the user to choose before writing begins."]
-
-## Existing Documentation
-
-- `README.md` — Mixed (tutorial + reference): installation guide + API table. Needs splitting.
-- `docs/api.md` — Reference (good shape)
-- `docs/CONTRIBUTING.md` — How-to guide (good shape)
-
-## Misclassifications
-
-- `README.md`: Mixes tutorial content (installation steps) with reference (API table) and explanation (design rationale). Split into three separate documents.
-
-## Documentation Plan
-
-### Tutorials (1 existing → 2 proposed)
-
-- [~] "Getting started" _(exists in README — needs extracting and expanding into a proper lesson)_
-- [ ] "Build your first X in 10 minutes" — A hands-on lesson walking a new user through a minimal working example from scratch.
-
-### How-to guides (1 existing → 3 proposed)
-
-- [x] "How to contribute" _(exists, good shape)_
-- [ ] "How to deploy to production" — Steps covering env vars, healthchecks, and rollback.
-- [ ] "How to run the test suite locally" — Steps to get tests running in a local dev environment, including prerequisites.
-
-### Reference (1 existing — needs improvement)
-
-- [~] "API reference" _(exists in README — needs extracting into its own file and completing)_
-- [ ] "Configuration reference" — Complete description of every configuration key, type, default, and effect.
-
-### Explanation (0 existing → 2 proposed)
-
-- [ ] "Why we built it this way" — Architecture decisions and the trade-offs behind them.
-- [ ] "Understanding the data model" — Conceptual overview of the core entities and how they relate.
-```
-
-## What Not to Do
-
-- Do not present results to the user. Do not ask the user for approval. The orchestrator does that.
-- Do not create empty folder structures. The plan lists documents to write; do not create `docs/tutorials/` with nothing in it.
-- Do not skip the gap analysis because the gaps seem obvious. Run it explicitly and record the results.
-- Do not classify a mixed document as one type because it is "mostly" that type. Flag the misclassification and propose splitting.
+   5. [ ] Design the conceptual architecture
+
+      Plan how explanations should be organised.
+
+      The conceptual structure should reflect the mental model of the software, not the file tree.
+
+      Identify:
+      - core concepts users must understand
+      - architectural ideas users need before advanced use
+      - design decisions that need explanation
+      - domain concepts that are specific to the project
+      - relationships between concepts
+
+   6. [ ] Design the reference architecture
+
+      Plan how reference documentation should be organised.
+
+      The reference structure should mirror the public interface of the software.
+
+      Depending on the project, this may include:
+      - API reference
+      - CLI reference
+      - configuration reference
+      - module reference
+      - schema reference
+      - plugin or extension reference
+      - error reference
+      - command reference
+
+   7. [ ] Design the contributor and developer architecture
+
+      Plan documentation for people who need to modify, extend, test, or release the software.
+
+      This should include, where applicable:
+      - development setup
+      - repository structure
+      - testing workflow
+      - build workflow
+      - release workflow
+      - coding conventions
+      - documentation conventions
+      - contribution process
+
+   8. [ ] Evaluate the proposed architecture against existing documentation
+
+      Compare the proposed architecture with the existing documentation structure.
+
+      Identify:
+      - existing sections that can be reused
+      - sections that need to move
+      - sections that need to be split
+      - sections that need to be merged
+      - sections that should be removed
+      - missing top-level sections
+      - navigation ambiguities
+
+   9. [ ] Update `docs/diataxis/plan.md`
+
+      Append the documentation architecture to the plan under the section "Documentation Architecture".
+
+      This section should contain:
+      - documentation vision
+      - proposed top-level navigation
+      - purpose of each major section
+      - learning architecture
+      - task architecture
+      - conceptual architecture
+      - reference architecture
+      - contributor/developer architecture
+      - structural issues to resolve
+
+5. [ ] Plan the documentation
+
+   Convert the documentation architecture into a specific document-by-document plan. The plan should live in `docs/diataxis/plan.md` under the section "Documentation Plan".
+
+   This step should produce the exact documentation system that needs to exist. Every planned document must have a clear place in the documentation hierarchy, a clear purpose, and a Diátaxis classification.
+
+   Write the plan assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know. Give them the whole plan as bite-sized tasks. DRY. YAGNI. Frequent commits.
+
+   Prioritise a minimal complete documentation system first. Add optional or advanced documents only where they are justified by the software architecture, user workflows, or operational needs.
+   1. [ ] Plan the full documentation hierarchy
+
+      Create a nested documentation tree showing every planned page.
+
+      Use this format:
+
+      ```text
+      Home
+      Getting Started
+        - Installation
+        - Quick Start
+      Tutorials
+        - <tutorial title>
+      How-to Guides
+        - <task group>
+          - <guide title>
+      Reference
+        - <reference group>
+          - <reference title>
+      Explanation
+        - <concept group>
+          - <explanation title>
+      Contributing
+        - <developer document title>
+      ```
+
+   2. [ ] Plan each document
+
+      For every document in the hierarchy, create an entry using this format:
+
+      ```text
+      Title: <document title>
+      Path: <where this document fits in the navigation hierarchy>
+      File: <recommended file path>
+      Diátaxis classification: <tutorial / how-to / reference / explanation>
+      Purpose: <one-sentence description of what this document is for>
+      Contents:
+        - <major heading or topic>
+        - <major heading or topic>
+        - <major heading or topic>
+      Depends on:
+        - <documents that should exist or be read before this one>
+      Related documents:
+        - <documents users may need next>
+      Priority: <Required / Recommended / Optional>
+      Status: <Existing / Rewrite / Split / Merge / New / Remove>
+      Transformation:
+        Type: <Rewrite / Split / Merge / Move / Remove>
+        Source:
+          - <existing document path>
+          - <existing document path>
+        Target:
+          - <new document path>
+          - <new document path>
+        Reason: <ruthlessly concise explanation of why this transformation is required>
+      ```
+
+      Omit the `Transformation` section for documents that require no structural changes.
+
+   3. [ ] Update `docs/diataxis/plan.md`
+
+      Append the document-by-document plan under the section "Documentation Plan".
+
+      This section must include:
+      - the full nested documentation hierarchy
+      - one planning entry for every document in the hierarchy.
+
+## Rules
+
+- Do not perform documentation gap analysis yet.
+- Do not redesign the documentation structure yet.
+- Do not classify documents yet.
+- Focus on understanding the system itself.
+- Prioritise conceptual understanding over implementation detail.
+- Reverse-engineer the system from the perspective of:
+  - users
+  - operators
+  - contributors
+  - maintainers
+- Build an internal mental model before planning documentation.
+- If the project is a software package or application, create an internal mermaid diagram for reasoning purposes.
+- The mermaid diagram is for internal reasoning only.
+- Do not present the diagram to the user unless explicitly requested.
+- Avoid low-level implementation noise.
+- Focus on:
+  - component relationships
+  - execution flow
+  - subsystem boundaries
+  - extension points
+  - configuration entry points
+  - user interaction flow
