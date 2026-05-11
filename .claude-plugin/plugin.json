@@ -1,7 +1,7 @@
 {
   "name": "diataxis-documentation",
   "description": "Survey a codebase, gap-analyse documentation using the Diataxis framework, plan improvements, and write docs one at a time",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "andrabis",
     "email": "hrs.andrabi@gmail.com"
